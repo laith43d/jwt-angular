@@ -50,8 +50,7 @@ class User(db.Model):
         """
         try:
             payload = jwt.decode(auth_token, app.config.get('SECRET_KEY'))
-            is_blacklisted_token = BlacklistToken.check_blacklist(auth_token)
-            if is_blacklisted_token:
+            if is_blacklisted_token := BlacklistToken.check_blacklist(auth_token):
                 return 'Token blacklisted. Please log in again.'
             else:
                 return payload['sub']
@@ -76,13 +75,10 @@ class BlacklistToken(db.Model):
         self.blacklisted_on = datetime.datetime.now()
 
     def __repr__(self):
-        return '<id: token: {}'.format(self.token)
+        return f'<id: token: {self.token}'
 
     @staticmethod
     def check_blacklist(auth_token):
-        # check whether auth token has been blacklisted
-        res = BlacklistToken.query.filter_by(token = str(auth_token)).first()
-        if res:
-            return True
-        else:
-            return False
+        return bool(
+            res := BlacklistToken.query.filter_by(token=str(auth_token)).first()
+        )

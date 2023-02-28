@@ -31,9 +31,7 @@ def test():
     """Runs the unit tests without test coverage."""
     tests = unittest.TestLoader().discover('project/tests', pattern = 'test*.py')
     result = unittest.TextTestRunner(verbosity = 2).run(tests)
-    if result.wasSuccessful():
-        return 0
-    return 1
+    return 0 if result.wasSuccessful() else 1
 
 
 @manager.command
@@ -49,7 +47,7 @@ def cov():
         basedir = os.path.abspath(os.path.dirname(__file__))
         covdir = os.path.join(basedir, 'tmp/coverage')
         COV.html_report(directory = covdir)
-        print('HTML version: file://%s/index.html' % covdir)
+        print(f'HTML version: file://{covdir}/index.html')
         COV.erase()
         return 0
     return 1

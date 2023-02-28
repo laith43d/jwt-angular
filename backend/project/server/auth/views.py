@@ -132,9 +132,7 @@ class LogoutAPI(MethodView):
     Logout Resource
     """
     def post(self):
-        # get auth token
-        auth_header = request.headers.get('Authorization')
-        if auth_header:
+        if auth_header := request.headers.get('Authorization'):
             auth_token = auth_header.split(" ")[1]
         else:
             auth_token = ''
